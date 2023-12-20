@@ -12,5 +12,8 @@ docker-up: ## Spin up application and the requirements
 docker-down: ## Stop the application and the requirements
 	docker-compose -f ./docker-compose.yml down
 
-docker-build: ## Build the docker image of the application
+docker-build-no-cache: ## Build the docker image of the application without caching 
 	docker build --no-cache -t ports-service -f ./Dockerfile . 
+
+docker-build: ## Build the docker image of the application
+	docker build -t ports-service -f ./Dockerfile .
