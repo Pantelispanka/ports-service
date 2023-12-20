@@ -38,7 +38,7 @@ func main() {
 	}
 
 	ctx := context.Background()
-	stream := portservice.NewJSONStream(ctx, terminateCh, portRepo)
+	stream := portservice.NewPortService(ctx, terminateCh, portRepo)
 	count := make(chan int, 1)
 	go func(counter chan int) {
 		i := 0

@@ -7,6 +7,7 @@ import (
 	"github.com/go-playground/validator"
 )
 
+// The port struct, and a validation of each field.
 type Port struct {
 	Unloc       string    `json:"unloc" validate:"required"`
 	Name        string    `json:"name"`

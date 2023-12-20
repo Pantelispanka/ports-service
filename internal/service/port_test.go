@@ -88,7 +88,7 @@ func TestPortService_Success(t *testing.T) {
 
 	ctx := context.Background()
 
-	stream := service.NewJSONStream(ctx, nil, repo)
+	stream := service.NewPortService(ctx, nil, repo)
 
 	reader := bytes.NewReader([]byte(portsSample))
 	go func(t *testing.T) {
@@ -112,7 +112,7 @@ func TestPortService_Invalid(t *testing.T) {
 
 	ctx := context.Background()
 
-	stream := service.NewJSONStream(ctx, nil, repo)
+	stream := service.NewPortService(ctx, nil, repo)
 
 	reader := bytes.NewReader([]byte(portsSample))
 	go func(t *testing.T) {
@@ -139,7 +139,7 @@ func TestPortService_Terminate(t *testing.T) {
 
 	terminate <- syscall.SIGTERM
 
-	stream := service.NewJSONStream(ctx, terminate, repo)
+	stream := service.NewPortService(ctx, terminate, repo)
 
 	reader := bytes.NewReader([]byte(portsSample))
 	go func(t *testing.T) {

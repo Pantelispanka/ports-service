@@ -19,12 +19,18 @@ type PortRepository interface {
 
 type PortService struct {
 	portRepo PortRepository
+	stream   chan Entry
+	context  context.Context
+	shutdown chan os.Signal
 }
 
-// Create new service and pass the dependencies
-func NewPortService(pr PortRepository) *PortService {
-	return &PortService{
+// Create new service and pass the dependencies. Returns a PortService
+func NewPortService(ctx context.Context, shutdown chan os.Signal, pr PortRepository) PortService {
+	return PortService{
 		portRepo: pr,
+		stream:   make(chan Entry),
+		context:  ctx,
+		shutdown: shutdown,
 	}
 }
 
@@ -34,32 +40,14 @@ type Entry struct {
 	Port  domain.Port
 }
 
-// Stream helps transmit each streams withing a channel.
-type Stream struct {
-	portRepo PortRepository
-	stream   chan Entry
-	context  context.Context
-	shutdown chan os.Signal
-}
-
-// NewJSONStream returns a new `Stream` type.
-func NewJSONStream(ctx context.Context, shutdown chan os.Signal, pr PortRepository) Stream {
-	return Stream{
-		portRepo: pr,
-		stream:   make(chan Entry),
-		context:  ctx,
-		shutdown: shutdown,
-	}
-}
-
 // Watch watches JSON streams. Each stream entry will either have an error or a
 // Port object. Client code does not need to explicitly exit after catching an
 // error as the `Start` method will close the channel automatically.
-func (s Stream) Watch() <-chan Entry {
+func (s PortService) Watch() <-chan Entry {
 	return s.stream
 }
 
-func (s Stream) Start(reader io.Reader) {
+func (s PortService) Start(reader io.Reader) {
 	// Stop streaming channel as soon as nothing left to read in the file.
 	defer close(s.stream)
 
