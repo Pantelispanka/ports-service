@@ -91,3 +91,9 @@ Before each parsing checks the signal to see if a terminate signal has been rece
 
 > To run locally exposed env variables should be present on the system for golang to retreive them. 
 The REDIS_URL and the FILE_PATH are critical for the application to run. 
+
+
+## Multistage Dockerfile
+
+A multistage Dockerfile is also presented. This does not build the app inside the containemr that will run the application but o a separate builder container. 
+This way also some level o security is achieved and the result image will have less size than the first one, naivelly created. 

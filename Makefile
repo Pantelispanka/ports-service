@@ -13,7 +13,7 @@ docker-down: ## Stop the application and the requirements
 	docker-compose -f ./docker-compose.yml down
 
 docker-build-no-cache: ## Build the docker image of the application without caching 
-	docker build --no-cache -t ports-service -f ./Dockerfile . 
+	docker build --no-cache -t ports-service -f ./Dockerfile.multi . 
 
 docker-build: ## Build the docker image of the application
-	docker build -t ports-service -f ./Dockerfile .
+	docker build -t ports-service -f ./Dockerfile.multi .
