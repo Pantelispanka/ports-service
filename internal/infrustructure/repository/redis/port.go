@@ -13,14 +13,6 @@ type PortRepository struct {
 	redisClient *redis.Client
 }
 
-// An Interface not sure if it is going to be used
-type Redis interface {
-	InsertPort(ctx context.Context, p *domain.Port) error
-	FindPort(ctx context.Context, p *domain.Port) (*domain.Port, error)
-	UpsertPort(ctx context.Context, p *domain.Port) (*domain.Port, error)
-	SetPort(ctx context.Context, p *domain.Port) (*domain.Port, error)
-}
-
 // Create and ingect the Prt repositpry repo in other packages
 func NewPortRepo(redisUrl string) (*PortRepository, error) {
 	options, err := redis.ParseURL(redisUrl)
