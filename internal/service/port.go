@@ -100,13 +100,17 @@ func (s Stream) Start(reader io.Reader) {
 		if err != nil {
 			fmt.Printf("WARNING: failed to validate port with code: %s", port.Code)
 			fmt.Printf("WARNING: %s", err.Error())
-			return
-		}
-		err = s.portRepo.UpsertPort(s.context, port)
-		if err != nil {
-			fmt.Printf("WARNING: failed to upsert port: %v", err)
 			continue
 		}
+
+		if err == nil {
+			err = s.portRepo.UpsertPort(s.context, port)
+			if err != nil {
+				fmt.Printf("WARNING: failed to upsert port: %v", err)
+				continue
+			}
+		}
+
 	}
 
 	// Read closing delimiter. `]` or `}`
