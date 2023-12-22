@@ -82,22 +82,23 @@ func (s PortService) Start(reader io.Reader) {
 		}
 
 		port.Unloc = key
-		s.stream <- Entry{Port: port}
 
 		err = port.Validate()
 		if err != nil {
 			fmt.Printf("WARNING: failed to validate port with code: %s", port.Code)
 			fmt.Printf("WARNING: %s", err.Error())
+			s.stream <- Entry{Error: fmt.Errorf("decode error: %w", err)}
 			continue
 		}
 
-		if err == nil {
-			err = s.portRepo.UpsertPort(s.context, port)
-			if err != nil {
-				fmt.Printf("WARNING: failed to upsert port: %v", err)
-				continue
-			}
+		err = s.portRepo.UpsertPort(s.context, port)
+		if err != nil {
+			fmt.Printf("WARNING: failed to upsert port: %v", err)
+			s.stream <- Entry{Error: fmt.Errorf("decode error: %w", err)}
+			continue
 		}
+
+		s.stream <- Entry{Port: port}
 
 	}
 

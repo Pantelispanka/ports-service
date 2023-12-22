@@ -95,5 +95,5 @@ The REDIS_URL and the FILE_PATH are critical for the application to run.
 
 ## Multistage Dockerfile
 
-A multistage Dockerfile is also presented. This does not build the app inside the containemr that will run the application but o a separate builder container. 
-This way also some level o security is achieved and the result image will have less size than the first one, naivelly created. 
+A multistage Dockerfile is also presented. This does not build the app inside the container that will run the application but on a separate builder container. 
+This way also some level o security is achieved and the result image will have a reduced size allowing quick spin up on a platform. 

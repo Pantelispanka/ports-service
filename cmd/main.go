@@ -40,10 +40,23 @@ func main() {
 	ctx := context.Background()
 	stream := portservice.NewPortService(ctx, terminateCh, portRepo)
 	count := make(chan int, 1)
-	go func(counter chan int) {
+	errorCounter := make(chan int, 1)
+	go func(counter chan int, errorCounter chan int) {
 		i := 0
+		j := 0
 		for data := range stream.Watch() {
 			if data.Error != nil {
+				j += 1
+				select {
+				case errorCounter <- j:
+
+				default:
+					select {
+					case <-errorCounter:
+						errorCounter <- j
+					default:
+					}
+				}
 				log.Println(data.Error)
 			}
 			i += 1
@@ -59,7 +72,7 @@ func main() {
 			}
 
 		}
-	}(count)
+	}(count, errorCounter)
 
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -71,6 +84,8 @@ func main() {
 	stream.Start(file)
 
 	counted := <-count
+	errorsCounted := <-errorCounter
 	fmt.Printf("Upsert %d ports \n", counted)
+	fmt.Printf("Error in %d ports \n", errorsCounted)
 	log.Println("Program ended...")
 }

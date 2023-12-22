@@ -15,6 +15,57 @@ import (
 
 var invalidJson = `sfgsfg`
 
+var validPorts = `{
+	"VNDAD": {
+		"name": "Da Nang",
+		"city": "Da Nang",
+		"country": "Viet Nam",
+		"alias": [],
+		"regions": [],
+		"coordinates": [55.0272904, 24.9857145],
+		"province": "Da Nang",
+		"timezone": "Asia/Saigon",
+		"unlocs": [
+		  "VNDAD"
+		],
+		"code": "55204"
+	  },
+	  "VNHPH": {
+		"name": "Haiphong",
+		"city": "Haiphong",
+		"country": "Viet Nam",
+		"alias": [],
+		"regions": [],
+		"coordinates": [52.6126027, 24.1915137],
+		"province": "Haiphong",
+		"timezone": "Asia/Saigon",
+		"unlocs": [
+		  "VNHPH"
+		],
+		"code": "55201"
+	  }
+}`
+
+var invalidPort = `{
+	  "VNNHA": {
+		"name": "Nha Trang",
+		"city": "Nha Trang",
+		"country": "Viet Nam",
+		"alias": [],
+		"regions": [],
+		"coordinates": [
+		  1009.1967488,
+		  12.2387911
+		],
+		"province": "Khanh Hoa Province",
+		"timezone": "Asia/Saigon",
+		"unlocs": [
+		  "VNNHA"
+		],
+		"code": "55208"
+	  }
+}`
+
 var portsSample = `{
 	"VNDAD": {
 		"name": "Da Nang",
@@ -90,7 +141,7 @@ func TestPortService_Success(t *testing.T) {
 
 	stream := service.NewPortService(ctx, nil, repo)
 
-	reader := bytes.NewReader([]byte(portsSample))
+	reader := bytes.NewReader([]byte(validPorts))
 	go func(t *testing.T) {
 		for data := range stream.Watch() {
 			assert.NoError(t, data.Error)
@@ -114,10 +165,10 @@ func TestPortService_Invalid(t *testing.T) {
 
 	stream := service.NewPortService(ctx, nil, repo)
 
-	reader := bytes.NewReader([]byte(portsSample))
+	reader := bytes.NewReader([]byte(invalidPort))
 	go func(t *testing.T) {
 		for data := range stream.Watch() {
-			assert.NoError(t, data.Error)
+			assert.NotNil(t, data.Error)
 		}
 	}(t)
 
